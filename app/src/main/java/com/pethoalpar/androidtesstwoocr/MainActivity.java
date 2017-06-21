@@ -28,12 +28,12 @@ import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
     public static final String TESS_DATA = "/tessdata";
+    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String DATA_PATH = Environment.getExternalStorageDirectory().toString() + "/Tess";
     private TextView textView;
     private TessBaseAPI tessBaseAPI;
     private Uri outputFileDir;
-    private static final String DATA_PATH = Environment.getExternalStorageDirectory().toString()+"/Tess";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             final Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileDir);
             if(pictureIntent.resolveActivity(getPackageManager() ) != null){
-                startActivityForResult(pictureIntent,100);
+                startActivityForResult(pictureIntent, 1024);
             }
         } catch (Exception e){
             Log.e(TAG, e.getMessage());
@@ -77,11 +77,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 100 && resultCode == Activity.RESULT_OK){
-            prepareTessData();
-            startOCR(outputFileDir);
-        }else{
-            Toast.makeText(getApplicationContext(),"Image problem",Toast.LENGTH_SHORT).show();
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1024) {
+            if (resultCode == Activity.RESULT_OK) {
+                prepareTessData();
+                startOCR(outputFileDir);
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(getApplicationContext(), "Result canceled.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "Activity result failed.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
