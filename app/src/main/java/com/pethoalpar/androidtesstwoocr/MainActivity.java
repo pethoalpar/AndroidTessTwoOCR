@@ -42,19 +42,25 @@ public class MainActivity extends AppCompatActivity {
 
         textView = (TextView) this.findViewById(R.id.textView);
         final Activity activity = this;
+        checkPermission();
         this.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-                    ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},120);
-                }
-                if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-                    ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},121);
-                }
+                checkPermission();
                 startCameraActivity();
             }
         });
     }
+
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 120);
+        }
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 121);
+        }
+    }
+
 
     private void startCameraActivity(){
         try{
@@ -155,13 +161,14 @@ public class MainActivity extends AppCompatActivity {
                 if(grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
                     Toast.makeText(this, "Read permission denied", Toast.LENGTH_SHORT).show();
                 }
+                break;
             }
             case 121:{
                 if(grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
                     Toast.makeText(this, "Write permission denied", Toast.LENGTH_SHORT).show();
                 }
+                break;
             }
-            return;
         }
     }
 }
