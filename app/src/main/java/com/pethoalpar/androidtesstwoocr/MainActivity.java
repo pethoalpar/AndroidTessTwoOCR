@@ -61,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
             String imagePath = DATA_PATH+ "/imgs";
             File dir = new File(imagePath);
             if(!dir.exists()){
-                dir.mkdir();
+                if (! dir.mkdir()) {
+                    Toast.makeText(getApplicationContext(), "The img director is not exists. Please verify the permission!", Toast.LENGTH_SHORT).show();
+                }
             }
             String imageFilePath = imagePath+"/ocr.jpg";
             outputFileDir = Uri.fromFile(new File(imageFilePath));
