@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AndroidTessTwoOCR</string>
+    <string name="title_activity_mainn">MainnActivity</string>
 </resources>
