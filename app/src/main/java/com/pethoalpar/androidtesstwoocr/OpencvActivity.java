@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import com.pethoalpar.androidtesstwoocr.R;
 import com.scanlibrary.ScanActivity;
 import com.scanlibrary.ScanConstants;
+import com.scanlibrary.Utils;
 
 import java.io.IOException;
 
@@ -37,13 +39,14 @@ public class OpencvActivity extends AppCompatActivity {
     }
 
     private void init() {
-        scanButton = (Button) findViewById(R.id.scanButton);
-        scanButton.setOnClickListener(new ScanButtonClickListener());
-        cameraButton = (Button) findViewById(R.id.cameraButton);
-        cameraButton.setOnClickListener(new ScanButtonClickListener(ScanConstants.OPEN_CAMERA));
-        mediaButton = (Button) findViewById(R.id.mediaButton);
-        mediaButton.setOnClickListener(new ScanButtonClickListener(ScanConstants.OPEN_MEDIA));
-        scannedImageView = (ImageView) findViewById(R.id.scannedImage);
+//        scanButton = (Button) findViewById(R.id.scanButton);
+//        scanButton.setOnClickListener(new ScanButtonClickListener());
+//        cameraButton = (Button) findViewById(R.id.cameraButton);
+//        cameraButton.setOnClickListener(new ScanButtonClickListener(ScanConstants.OPEN_CAMERA));
+//        mediaButton = (Button) findViewById(R.id.mediaButton);
+//        mediaButton.setOnClickListener(new ScanButtonClickListener(ScanConstants.OPEN_MEDIA));
+//        scannedImageView = (ImageView) findViewById(R.id.scannedImage);
+        startScan(4);
     }
 
     private class ScanButtonClickListener implements View.OnClickListener {
@@ -78,11 +81,18 @@ public class OpencvActivity extends AppCompatActivity {
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                 getContentResolver().delete(uri, null, null);
-                scannedImageView.setImageBitmap(bitmap);
+
+                uri = Utils.getUri(this, bitmap);
+                data.putExtra(ScanConstants.SCANNED_RESULT, uri);
+                this.setResult(Activity.RESULT_OK, data);
+                finish();
+
+//                scannedImageView.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
     }
 
     private Bitmap convertByteArrayToBitmap(byte[] data) {
