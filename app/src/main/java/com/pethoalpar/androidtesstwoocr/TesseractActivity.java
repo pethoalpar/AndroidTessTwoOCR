@@ -1,7 +1,6 @@
 package com.pethoalpar.androidtesstwoocr;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -34,11 +33,11 @@ public class TesseractActivity extends AppCompatActivity {
 
     public static final String TESS_DATA = "/tessdata";
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String DATA_PATH = Environment.getExternalStorageDirectory().toString() + "/Tess";
     private TextView textView;
     private TessBaseAPI tessBaseAPI;
     private Uri outputFileDir;
     private String mCurrentPhotoPath;
+    private String pathToDataFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +45,6 @@ public class TesseractActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tesseract);
 
         textView = (TextView) this.findViewById(R.id.textView);
-        final Activity activity = this;
         checkPermission();
         this.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,39 +118,39 @@ public class TesseractActivity extends AppCompatActivity {
         }
     }
 
-    private void prepareTessData(){
-        try{
+    private void prepareTessData() {
+        try {
             File dir = getExternalFilesDir(TESS_DATA);
-            if(!dir.exists()){
+            if (!dir.exists()) {
                 if (!dir.mkdir()) {
                     Toast.makeText(getApplicationContext(), "The folder " + dir.getPath() + "was not created", Toast.LENGTH_SHORT).show();
                 }
             }
             String fileList[] = getResources().getAssets().list("");
-            for(String fileName : fileList){
+            for (String fileName : fileList) {
                 Log.d("PANMAI", fileName);
-                String pathToDataFile = dir + "/" + fileName;
-                if(!(new File(pathToDataFile)).exists()){
+                pathToDataFile = dir + "/" + fileName;
+                if (!(new File(pathToDataFile)).exists()) {
                     InputStream in = getAssets().open(fileName);
                     OutputStream out = new FileOutputStream(pathToDataFile);
-                    byte [] buff = new byte[1024];
-                    int len ;
-                    while(( len = in.read(buff)) > 0){
-                        out.write(buff,0,len);
+                    byte[] buff = new byte[1024];
+                    int len;
+                    while ((len = in.read(buff)) > 0) {
+                        out.write(buff, 0, len);
                     }
                     in.close();
                     out.close();
                 }
             }
 
-            String pathToDataFile = dir + "/" + "tha.traineddata";
-            if(!(new File(pathToDataFile)).exists()){
+            pathToDataFile = dir + "/" + "tha.traineddata";
+            if (!(new File(pathToDataFile)).exists()) {
                 InputStream in = getAssets().open("tha.traineddata");
                 OutputStream out = new FileOutputStream(pathToDataFile);
-                byte [] buff = new byte[1024];
-                int len ;
-                while(( len = in.read(buff)) > 0){
-                    out.write(buff,0,len);
+                byte[] buff = new byte[1024];
+                int len;
+                while ((len = in.read(buff)) > 0) {
+                    out.write(buff, 0, len);
                 }
                 in.close();
                 out.close();
@@ -162,32 +160,32 @@ public class TesseractActivity extends AppCompatActivity {
         }
     }
 
-    private void startOCR(Uri imageUri){
-        try{
+    private void startOCR(Uri imageUri) {
+        try {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = false;
             options.inSampleSize = 6;
             Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, options);
             String result = this.getText(bitmap);
             textView.setText(result);
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
     }
 
-    private String getText(Bitmap bitmap){
-        try{
+    private String getText(Bitmap bitmap) {
+        try {
             tessBaseAPI = new TessBaseAPI();
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
         String dataPath = getExternalFilesDir("/").getPath() + "/";
         tessBaseAPI.init(dataPath, "eng");
         tessBaseAPI.setImage(bitmap);
         String retStr = "No result";
-        try{
+        try {
             retStr = tessBaseAPI.getUTF8Text();
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
         tessBaseAPI.end();
