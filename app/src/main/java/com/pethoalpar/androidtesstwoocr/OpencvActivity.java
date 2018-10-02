@@ -8,62 +8,30 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.pethoalpar.androidtesstwoocr.R;
 import com.scanlibrary.ScanActivity;
 import com.scanlibrary.ScanConstants;
-import com.scanlibrary.Utils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 
 public class OpencvActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE = 99;
-    private Button scanButton;
-    private Button cameraButton;
-    private Button mediaButton;
-    private ImageView scannedImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_opencv);
-        init();
-    }
 
-    private void init() {
-//        scanButton = (Button) findViewById(R.id.scanButton);
-//        scanButton.setOnClickListener(new ScanButtonClickListener());
-//        cameraButton = (Button) findViewById(R.id.cameraButton);
-//        cameraButton.setOnClickListener(new ScanButtonClickListener(ScanConstants.OPEN_CAMERA));
-//        mediaButton = (Button) findViewById(R.id.mediaButton);
-//        mediaButton.setOnClickListener(new ScanButtonClickListener(ScanConstants.OPEN_MEDIA));
-//        scannedImageView = (ImageView) findViewById(R.id.scannedImage);
-        startScan(4);
-    }
-
-    private class ScanButtonClickListener implements View.OnClickListener {
-
-        private int preference;
-
-        public ScanButtonClickListener(int preference) {
-            this.preference = preference;
-        }
-
-        public ScanButtonClickListener() {
-        }
-
-        @Override
-        public void onClick(View v) {
-            startScan(preference);
-        }
+        int preference = 4;
+        startScan(preference);
     }
 
     protected void startScan(int preference) {
@@ -82,21 +50,28 @@ public class OpencvActivity extends AppCompatActivity {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                 getContentResolver().delete(uri, null, null);
 
-                uri = Utils.getUri(this, bitmap);
-                data.putExtra(ScanConstants.SCANNED_RESULT, uri);
-                this.setResult(Activity.RESULT_OK, data);
-                finish();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
 
-//                scannedImageView.setImageBitmap(bitmap);
+                Intent in1 = new Intent(getBaseContext(), TesseractActivity.class);
+                in1.putExtra("image", byteArray);
+                in1.putExtra("test", "test");
+                startActivityForResult(in1, 0);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-    }
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
+            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+            String result = data.getStringExtra("result");
+            intent.putExtra("result", result);
+            this.setResult(Activity.RESULT_OK, intent);
+            finish();
+        }
 
-    private Bitmap convertByteArrayToBitmap(byte[] data) {
-        return BitmapFactory.decodeByteArray(data, 0, data.length);
     }
 
     @Override
