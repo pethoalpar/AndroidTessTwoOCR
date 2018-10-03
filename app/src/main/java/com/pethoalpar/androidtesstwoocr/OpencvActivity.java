@@ -26,6 +26,8 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import id.zelory.compressor.Compressor;
+
 
 public class OpencvActivity extends AppCompatActivity {
 
@@ -61,7 +63,13 @@ public class OpencvActivity extends AppCompatActivity {
                 File photoFile = createImageFile();
 
                 os = new FileOutputStream(photoFile);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                int imageWidth = bitmap.getWidth();
+                int imageHeight = bitmap.getHeight();
+                int newHeight = (imageHeight * 2000)/imageWidth;
+                bitmap = Bitmap.createScaledBitmap(bitmap, 2000, newHeight, true);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, os);
+
+//                File compressedImageFile = new Compressor(this).compressToFile(photoFile);
 
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.PNG, 10, stream);

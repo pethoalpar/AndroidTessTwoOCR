@@ -23,8 +23,7 @@ android {
 
 dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-//    implementation 'com.android.support:design:24.4.0'
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -38,4 +37,7 @@ dependencies {
 
     // Permission
     implementation 'com.karumi:dexter:5.0.0'
+
+    // Compress image size
+    implementation 'id.zelory:compressor:2.1.0'
 }
