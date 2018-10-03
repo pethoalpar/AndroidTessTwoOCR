@@ -69,7 +69,6 @@ public class OpencvActivity extends AppCompatActivity {
 
                 Intent in1 = new Intent(getBaseContext(), TesseractActivity.class);
                 in1.putExtra("image", byteArray);
-                in1.putExtra("test", "test");
                 startActivityForResult(in1, 0);
 
             } catch (IOException e) {

@@ -14,14 +14,20 @@
 
     <TextView
         android:id="@+id/tv_result"
-        android:layout_width="345dp"
-        android:layout_height="171dp"
+        android:layout_width="350dp"
+        android:layout_height="170dp"
+        android:layout_above="@+id/btn_scan"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="78dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginBottom="10dp"
         android:background="@color/white"
         android:text="TextView" />
 
@@ -31,6 +37,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="142dp"
+        android:layout_marginBottom="50dp"
         android:text="Button" />
 </RelativeLayout>

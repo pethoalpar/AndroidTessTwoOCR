@@ -46,10 +46,9 @@ public class TesseractActivity extends AppCompatActivity {
             }
             String fileList[] = getResources().getAssets().list("");
             for (String fileName : fileList) {
-                Log.d("PANMAI", fileName);
                 pathToDataFile = dir + "/" + fileName;
                 if (!(new File(pathToDataFile)).exists()) {
-                    InputStream in = getAssets().open(fileName);
+                    InputStream in = getResources().getAssets().open(fileName);
                     OutputStream out = new FileOutputStream(pathToDataFile);
                     byte[] buff = new byte[1024];
                     int len;
@@ -61,18 +60,6 @@ public class TesseractActivity extends AppCompatActivity {
                 }
             }
 
-            pathToDataFile = dir + "/" + "tha.traineddata";
-            if (!(new File(pathToDataFile)).exists()) {
-                InputStream in = getAssets().open("tha.traineddata");
-                OutputStream out = new FileOutputStream(pathToDataFile);
-                byte[] buff = new byte[1024];
-                int len;
-                while ((len = in.read(buff)) > 0) {
-                    out.write(buff, 0, len);
-                }
-                in.close();
-                out.close();
-            }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
@@ -98,7 +85,7 @@ public class TesseractActivity extends AppCompatActivity {
             Log.e(TAG, e.getMessage());
         }
         String dataPath = getExternalFilesDir("/").getPath() + "/";
-        tessBaseAPI.init(dataPath, "eng");
+        tessBaseAPI.init(dataPath, "eng+tha");
         tessBaseAPI.setImage(bitmap);
         String retStr = "No result";
         try {
